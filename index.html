@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Palmira - Indiscapesv2</title>
+    <title>PALMIRA - Indiscapesv2</title>
     <!--=================Meta tags==========================-->
     <meta name="robots" content="index,follow">
     <meta name="description"
@@ -58,7 +58,7 @@
                 <!--=================Authors==========================-->
                 <div class="authors">
                     <a href="https://syzygianinfern0.github.io/" target="_blank">S. P. Sharan</a>
-                    <sup>1, 2</sup>
+                    <sup>1</sup>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="mailto:sowmya.aitha@research.iiit.ac.in" target="_blank">Sowmya Aitha</a>
                     <sup>1</sup>
@@ -75,8 +75,12 @@
 
                 <div class="affiliations ">
                     <sup>1</sup> International Institute of Information Technology, Hyderabad <br>
-                    <sup>2</sup> National Institute of Technology, Tiruchirappalli <br>
+                    <!-- <sup>2</sup> National Institute of Technology, Tiruchirappalli <br> -->
                     <!-- <sup>3</sup> Uni 3 -->
+                </div>
+
+                <div class="venue">
+                    To appear at <a href="https://icdar2021.org/">ICDAR 2021</a>
                 </div>
                 <!--=================Tabs==========================-->
                 <ul id="tabs">
@@ -122,7 +126,7 @@
                         In addition, we introduce a novel deep learning based layout parsing architecture called Palm leaf Manuscript Region Annotator or Palmira in short. 
                     </li>
                     <li>
-                        Through our experiments, we show that Palmira outperforms the previous approach and strong baselines, qualitatively and quantitatively. 
+                        Through our experiments, we show that PALMIRA outperforms the previous approach and strong baselines, qualitatively and quantitatively. 
                     </li>
                         Additionally, we demonstrate the general nature of our approach on out-of-dataset historical manuscripts.
                     <li>
@@ -238,7 +242,7 @@
                 <h2>Abstract</h2>
                 <br>
                 <p>
-                    Handwritten documents are often characterized by dense and uneven layout. Despite advances, standard deep network based approaches for semantic layout segmentation are not robust to complex deformations seen across semantic regions. This phenomenon is especially pronounced for the low-resource Indic palm-leaf manuscript domain. To address the issue, we first introduce Indiscapes2, a new large-scale diverse dataset of Indic manuscripts with semantic layout annotations. Indiscapes2 contains documents from four different historical collections and is $150\%$ larger than its predecessor, Indiscapes. We also propose a novel deep network Palmira for robust, deformation-aware instance segmentation of regions in handwritten manuscripts. We also report Hausdorff distance and its variants as a boundary-aware performance measure. Our experiments demonstrate that Palmira provides robust layouts, outperforms strong baseline approaches and ablative variants. We also include qualitative results on Arabic, South-East Asian and Hebrew historical manuscripts to showcase the  generalization capability of Palmira. 
+                    Handwritten documents are often characterized by dense and uneven layout. Despite advances, standard deep network based approaches for semantic layout segmentation are not robust to complex deformations seen across semantic regions. This phenomenon is especially pronounced for the low-resource Indic palm-leaf manuscript domain. To address the issue, we first introduce Indiscapes2, a new large-scale diverse dataset of Indic manuscripts with semantic layout annotations. Indiscapes2 contains documents from four different historical collections and is $150\%$ larger than its predecessor, Indiscapes. We also propose a novel deep network PALMIRA for robust, deformation-aware instance segmentation of regions in handwritten manuscripts. We also report Hausdorff distance and its variants as a boundary-aware performance measure. Our experiments demonstrate that PALMIRA provides robust layouts, outperforms strong baseline approaches and ablative variants. We also include qualitative results on Arabic, South-East Asian and Hebrew historical manuscripts to showcase the  generalization capability of PALMIRA. 
                 </p>
             </div>
 
@@ -248,7 +252,7 @@
                 <!--=================*******==========================-->
                 <h3>1. Indiscapesv2 Test Set - Document Level</h3>
                 <div id="vid4" class="img_container">
-                    Layout predictions by Palmira on representative test set documents from Indiscapes2 dataset. Note that the colors are used to distinguish region instances. The region category abbreviations are present at corners of the regions.
+                    Layout predictions by PALMIRA on representative test set documents from Indiscapes2 dataset. Note that the colors are used to distinguish region instances. The region category abbreviations are present at corners of the regions.
                     <br>
                     <br>
                     <center>
@@ -262,7 +266,7 @@
                 <!--=================*******==========================-->
                 <h3>2. Indiscapesv2 Test Set - Region Level Performance </h3>
                 <div id="vid4" class="img_container">
-                    A comparative illustration of region-level performance. Palmira’s predictions are in red. Predictions from the best model among baselines (BoundaryPreserving Mask-RCNN) are in green. Ground-truth boundary is depicted in white.                    
+                    A comparative illustration of region-level performance. PALMIRA's predictions are in red. Predictions from the best model among baselines (BoundaryPreserving Mask-RCNN) are in green. Ground-truth boundary is depicted in white.                    
                     <br>
                     <br>
                     <center>
@@ -276,7 +280,7 @@
                 <!--=================*******==========================-->
                 <h3>3. Other Documents (Out of Dataset)</h3>
                 <div id="vid4" class="img_container">
-                    Layout predictions by Palmira on out-of-dataset handwritten Manuscripts
+                    Layout predictions by PALMIRA on out-of-dataset handwritten Manuscripts
                     <br>
                     <br>
                     <center>
