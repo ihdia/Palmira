@@ -12,11 +12,13 @@
     <meta name="keywords"
           content="instance segmentation, deformable convolutional network, historical document analysis, document image segmentation, dataset" />
     <link rel="author" href="https://syzygianinfern0.github.io/" />
-    <!--=================js==========================-->
+    <!--=================js and css==========================-->
 
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="./jquery-magnify.js"></script>
 
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Quattrocento+Sans&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="./jquery-magnify.css" />
     <link rel="stylesheet" type="text/css" href="./project.css" media="screen" />
     <!-- Latex -->
@@ -26,7 +28,7 @@
         TeX: { equationNumbers: { autoNumber: "AMS" } },
         });
     </script>
-    <script type="text/javascript" async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async
+    <script type="text/javascript" async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async async=async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
     </script>
     <!--=================Google Analytics==========================-->
@@ -78,9 +80,12 @@
 </head>
 
 <body>
+
     <div id="content">
+        <img src="./assets/iiith-logo.png" style="float: left; width: 20%; height: 20%;" />
+        <img src="./assets/cvit-logo.jpg" style="float: right; width: 10%; height: 10%;" />
         <div id="content-inner">
-            <div class="section head">
+            <div class="section head" id="title-section">
                 <h1>
                     <!-- Palm leaf Manuscript Region Annotator -->
                     <font color="Tomato">PALMIRA</font>:
@@ -140,9 +145,9 @@
                 <h2>Highlights</h2>
                 <ol>
                     <!-- <li>GLEAN adopts a novel idea of a <b>Generative Latent Bank</b>, leveraging a pre-trained GAN as a
-                        dictionary.</li>
-                    <li>By switching different GANs, GLEAN can be applied to various categories.
-                    </li> -->
+                    dictionary.</li>
+                <li>By switching different GANs, GLEAN can be applied to various categories.
+                </li> -->
                     <li>
                         We introduce Indiscapes2, a collection of handwritten palm-leaf manuscripts which is 150% larger compared to its predecessor Indiscapes and contains two additional annotated collections which greatly increase qualitative diversity.
                     </li>
@@ -198,13 +203,13 @@
                 </div>
                 <br />
                 <!-- <div class="row">
-                    <div class="column">
-                        <img src="./assets/Deformable-Conv.jpg" alt="Deformable-Conv" style="width:100%">
-                    </div>
-                    <div class="column">
-                        <img src="./assets/Defgrid-Arch.jpg" alt="Deformable-Conv" style="width:100%">
-                    </div>
-                </div> -->
+                <div class="column">
+                    <img src="./assets/Deformable-Conv.jpg" alt="Deformable-Conv" style="width:100%">
+                </div>
+                <div class="column">
+                    <img src="./assets/Defgrid-Arch.jpg" alt="Deformable-Conv" style="width:100%">
+                </div>
+            </div> -->
             </div>
 
             <!--=================Dataset==========================-->
@@ -333,10 +338,11 @@
                 <div class="section citation" ,=, id="citation">
                     <h2>Citation</h2>
                     <div class="section bibtex">
-                        <pre>@inProceedings{author2021title,
-    title = {PALMIRA: Palm Leaf Manuscript Region Annotator},
+                        <pre>@inproceedings{sharan2021palmira,
+    title = {PALMIRA: A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts},
     author = {Sharan, S P and Aitha, Sowmya and Amandeep, Kumar and Trivedi, Abhishek and Augustine, Aaron and Sarvadevabhatla, Ravi Kiran},
-    booktitle = {ICDAR},
+    booktitle = {International Conference on Document Analysis and Recognition,
+               {ICDAR} 2021},
     year = {2021},
 }</pre>
                     </div>
