@@ -2,7 +2,9 @@
 
 # PALMIRA
 
-#### A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts
+## A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts
+
+**_To appear at [ICDAR 2021](https://icdar2021.org/)_**
 
 | **[ [```Paper```](<>) ]** | **[ [```Website```](<https://ihdia.iiit.ac.in/Palmira/>) ]** |
 |:-------------------:|:-------------------:|
@@ -28,14 +30,15 @@ The PALMIRA code is tested with
 
 For setup of detectron2, please follow the [official documentation](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
 
-# Training
+# Usage
+## Training
 
-# Evaluation (w GT)
-## Quantitative
-## Qualitative - Parsing .json and overlays images
+## Evaluation (w GT)
+### Quantitative
+### Qualitative - Parsing .json and overlays images
 
-# Inference (wo GT)
-## Qualitative
+## Inference (wo GT)
+### Qualitative
 
 # Visual Results
 ![visual results](assets/Qualitative.png)
