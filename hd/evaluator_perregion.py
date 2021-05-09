@@ -1,40 +1,35 @@
-from statistics import mean
+"""
+HD per region
+Useful for getting instance level metrics for comparison
+"""
 import collections
-
-import cv2
-
-import cv2
 import os.path as osp
-# import logging
+
+import cv2
 import numpy as np
 from detectron2.data import DatasetCatalog
 from detectron2.evaluation import DatasetEvaluator
+from medpy.metric import hd95, assd
 from scipy.interpolate import splprep, splev
-from shapely.geometry import MultiPolygon
-from shapely.geometry import Polygon
-from shapely.ops import cascaded_union
-# from detectron2.utils.logger import create_small_table
-from hd.losses import averaged_hausdorff_distance
+
 from indiscapes_dataset import categories_list
-# import itertools
-# from tabulate import tabulate
-from medpy.metric import hd, hd95, assd
-                    
+
+
 def _proc_annotations(annotations):
     dic = {}
     for file in annotations.copy():
-        for region in file['annotations']:
-            l = region['segmentation'][0]
+        for region in file["annotations"]:
+            l = region["segmentation"][0]
             n = 2
             x = [l[i: i + n] for i in range(0, len(l), n)]
-            region['segmentation'] = x
-        dic[file['file_name']] = file
+            region["segmentation"] = x
+        dic[file["file_name"]] = file
 
-        segm = dic[file['file_name']]['annotations']
+        segm = dic[file["file_name"]]["annotations"]
         segm_per_region = {i: [] for i in range(len(categories_list))}
         for region in segm:
-            segm_per_region[region['category_id']].append(region['segmentation'])
-        dic[file['file_name']]['segm_per_region'] = segm_per_region
+            segm_per_region[region["category_id"]].append(region["segmentation"])
+        dic[file["file_name"]]["segm_per_region"] = segm_per_region
     return dic
 
 
@@ -53,16 +48,14 @@ def PolyArea(x, y):
 
 
 def downsample_points(output):
-    predmasks = output['instances'].pred_masks
+    predmasks = output["instances"].pred_masks
     predmasks = (predmasks.cpu()) * 255
     predmasks = np.uint8(predmasks.numpy())
 
     segm_per_region = {i: [] for i in range(len(categories_list))}
 
-    for i in range(len(output['instances'])):
-        contours, hierarchy = cv2.findContours(
-            predmasks[i], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
+    for i in range(len(output["instances"])):
+        contours, hierarchy = cv2.findContours(predmasks[i], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours) == 0:
             continue
         contours = get_biggest_contour(contours)
@@ -77,8 +70,8 @@ def downsample_points(output):
         okay = np.where(np.abs(np.diff(x)) + np.abs(np.diff(y)) > 0)
         x = np.r_[x[okay], x[-1], x[0]]
         y = np.r_[y[okay], y[-1], y[0]]
-        pred_class = categories_list[output['instances'].pred_classes[i]]
-        if pred_class == 'Character Line Segment':
+        pred_class = categories_list[output["instances"].pred_classes[i]]
+        if pred_class == "Character Line Segment":
             nbr_of_pts = 50
         else:
             nbr_of_pts = 20
@@ -89,7 +82,7 @@ def downsample_points(output):
             [smoothened[:, 1], smoothened[:, 0]] = splev(u_new, tck, der=0)
         except:
             raise Exception("Idk wat this is!")
-        segm_per_region[output['instances'].pred_classes[i].item()].append(smoothened)
+        segm_per_region[output["instances"].pred_classes[i].item()].append(smoothened)
     return segm_per_region
 
 
@@ -130,12 +123,10 @@ class HDEvaluator(DatasetEvaluator):
 
     def process(self, inputs, outputs):
         for input, output in zip(inputs, outputs):
-            # if "penn" not in input['file_name']:
-            #     continue
-            self.count += len(output['instances'])
-            gt_segm = self.annotations[input['file_name']]['segm_per_region']
+            self.count += len(output["instances"])
+            gt_segm = self.annotations[input["file_name"]]["segm_per_region"]
             try:
-                _ = output['instances'].pred_masks
+                _ = output["instances"].pred_masks
             except AttributeError:
                 continue
             pred_segm = downsample_points(output)
@@ -149,66 +140,11 @@ class HDEvaluator(DatasetEvaluator):
 
                 # Both have points
                 if len(gt) and len(pred):
-                    # gt_cat = np.concatenate(gt)
-                    # pred_cat = np.concatenate(pred)
-                    # res_ahd, res_hd, res_hd95 = averaged_hausdorff_distance(gt_cat, pred_cat)
-                    # self.ahd[categories_list[reg_type]].append(res_ahd)
-                    # self.hd[categories_list[reg_type]].append(res_hd)
-                    # self.hd95[categories_list[reg_type]].append(res_hd95)
-
-                    # # try:
-                    # gt_poly = []
-                    # for each in gt:
-                    #     poly = Polygon(each)
-                    #     if isinstance(poly, Polygon):
-                    #         gt_poly.append(poly)
-                    #     else:
-                    #         print("Its polygon(arr) isnt a polygon")
-                    # gt_poly = MultiPolygon(gt_poly)
-                    #     # gt_poly = MultiPolygon([Polygon(each).buffer(0) for each in gt])
-                        
-                    # pred_poly = []
-                    # for each in pred:
-                    #     poly = Polygon(each)
-                    #     if isinstance(poly, Polygon):
-                    #         pred_poly.append(poly)
-                    #     else:
-                    #         print("Its polygon(arr) isnt a polygon")
-                    # pred_poly = MultiPolygon(pred_poly)
-                        
-                    #     # pred_poly = MultiPolygon([Polygon(each).buffer(0) for each in pred])
-                    # # except:
-                    # #     print("Somethings up!")
-                    
-                    # # intersection = []
-                    # # for a in gt_poly:
-                    # #     for b in pred_poly:
-                    # #         try:
-                    # #             intersection.append(a.intersection(b))
-                    # intersection = []
-                    # for a in gt_poly:
-                    #     for b in pred_poly:
-                    #         # try:
-                    #         #     intersection.append(a.intersection(b))
-                    #         # except:
-                    #         #     intersection.append(a.buffer(0.01).intersection(b.buffer(0.01)))
-                    #         intersection.append(a.buffer(0.01).intersection(b.buffer(0.01)))
-                    # intersection = cascaded_union(intersection)
-                    # # intersection = cascaded_union(
-                    # #     [a.intersection(b) for a in gt_poly for b in pred_poly]
-                    # # )
-
-                    # gt_poly = MultiPolygon([Polygon(each) for each in gt])
-                    # pred_poly = MultiPolygon([Polygon(each) for each in pred])
-                    # intersection = cascaded_union(
-                    #     [a.buffer(0.01).intersection(b.buffer(0.01)) for a in gt_poly for b in pred_poly]
-                    # )
-                    # union = cascaded_union([gt_poly, pred_poly])
-                    # iou = intersection.area / union.area
-                    gt_mask = np.zeros((len(gt), input['height'], input['width']), dtype=np.int8)
+                    """"Peformed using medpy"""
+                    gt_mask = np.zeros((len(gt), input["height"], input["width"]), dtype=np.int8)
                     for i in range(len(gt)):
                         cv2.fillPoly(gt_mask[i], np.array([gt[i]]).astype(np.int32), 1)
-                    pred_mask = np.zeros((len(pred), input['height'], input['width']), dtype=np.int8)
+                    pred_mask = np.zeros((len(pred), input["height"], input["width"]), dtype=np.int8)
                     for i in range(len(pred)):
                         cv2.fillPoly(pred_mask[i], np.array([pred[i]]).astype(np.int32), 1)
                     gt_mask = gt_mask.astype(np.uint8)
@@ -242,7 +178,6 @@ class HDEvaluator(DatasetEvaluator):
                     corr_matrix[:, 0] = np.argmax(iou_hd_dict[:, :, 0], 1)
                     for i, each_gt_instance_metric in enumerate(iou_hd_dict):
                         corr_matrix[i, 1:] = each_gt_instance_metric[corr_matrix[i, 0].astype(np.int)]
-
 
                     gt_mask_copy = gt_mask.copy()
                     gt_mask_copy = np.repeat(gt_mask_copy[:, :, :, np.newaxis], 3, axis=3)
@@ -284,15 +219,21 @@ class HDEvaluator(DatasetEvaluator):
                                         "iou": metrics[0].round(2),
                                         "ahd": metrics[2].round(2),
                                         "hd95": metrics[1].round(2),
-
                                     }
                                 )
                                 continue
                             text_metrics = np.array2string(
                                 (corr_matrix[np.where(i == corr_matrix[:, 0]), 1:].round(4)).squeeze()
                             )
-                            cv2.putText(pred_image_copy, f"{i} - {text_metrics}", pos, cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                                        (255, 0, 0), 2)
+                            cv2.putText(
+                                pred_image_copy,
+                                f"{i} - {text_metrics}",
+                                pos,
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.7,
+                                (255, 0, 0),
+                                2,
+                            )
                         else:
                             cv2.putText(pred_image_copy, f"{i}", pos, cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
 
@@ -301,11 +242,15 @@ class HDEvaluator(DatasetEvaluator):
                     if not self.write_to_csv:
                         save_path = "final_outputs/comparision/bmrcnn_masks_whew/"
                         import os
-                        file_name = os.path.splitext('_'.join(input['file_name'].split('/')[-3:]))[0]
-                        cv2.imwrite(save_path + f"{file_name}_gt_{reg_type}.jpg",
-                                    cv2.cvtColor(gt_image, cv2.COLOR_RGB2BGR))
-                        cv2.imwrite(save_path + f"{file_name}_pred_{reg_type}.jpg",
-                                    cv2.cvtColor(pred_image_copy, cv2.COLOR_RGB2BGR))
+
+                        file_name = os.path.splitext("_".join(input["file_name"].split("/")[-3:]))[0]
+                        cv2.imwrite(
+                            save_path + f"{file_name}_gt_{reg_type}.jpg", cv2.cvtColor(gt_image, cv2.COLOR_RGB2BGR)
+                        )
+                        cv2.imwrite(
+                            save_path + f"{file_name}_pred_{reg_type}.jpg",
+                            cv2.cvtColor(pred_image_copy, cv2.COLOR_RGB2BGR),
+                        )
                     # res_iou, res_accuracy = compute_iou_and_accuracy(pred_mask, gt_mask)
                     # res_ahd, res_hd, res_hd95 = assd(pred_mask, gt_mask), hd(pred_mask, gt_mask), hd95(pred_mask, gt_mask)
                     # self.ahd[categories_list[reg_type]].append(res_ahd)
@@ -330,8 +275,8 @@ class HDEvaluator(DatasetEvaluator):
                 #     self.ahd[categories_list[reg_type]].append(hd)
                 #     self.hd[categories_list[reg_type]].append(hd)
                 #     self.hd95[categories_list[reg_type]].append(hd)
-                    # self.iou[categories_list[reg_type]].append(0)
-                    # self.acc[categories_list[reg_type]].append(0)
+                # self.iou[categories_list[reg_type]].append(0)
+                # self.acc[categories_list[reg_type]].append(0)
                 # Both Empty
                 # elif len(gt) == 0 and len(pred) != 0:
 
@@ -364,12 +309,12 @@ class HDEvaluator(DatasetEvaluator):
                 total_acc.extend(l)
             doc_acc = np.mean(total_acc)
 
-            self.doc_wise[input['file_name']] = {
+            self.doc_wise[input["file_name"]] = {
                 "AHD": doc_ahd,
                 "IOU": doc_iou,
                 "HD": doc_hd,
                 "HD95": doc_hd95,
-                "ACC": doc_acc
+                "ACC": doc_acc,
             }
 
     def evaluate(self):
@@ -400,17 +345,21 @@ class HDEvaluator(DatasetEvaluator):
         self.acc["Overall"] = np.mean(total_acc)
 
         import csv
+
+        """Exporting to file"""
         # with open("metrics_per_doc.csv", 'w') as csvfile:
         #     writer = csv.DictWriter(csvfile, fieldnames=["Image", "AHD", "IOU", "HD", "HD95", "ACC"])
         #     writer.writeheader()
         #     for filename, metrics in self.doc_wise.items():
         #         writer.writerow({"Image":filename, **metrics})
-        with open("region_wise.csv", 'w') as csvfile:
+
+        with open("region_wise.csv", "w") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=["region_name", "iou", "ahd", "hd95"])
             writer.writeheader()
             for metrics in self.metrics_for_csv:
                 writer.writerow(metrics)
 
+        """Printing as a detectron2 table"""
         # table = {
         #     "HD": self.hd["Overall"],
         #     "Avg HD": self.ahd["Overall"],
@@ -435,6 +384,7 @@ class HDEvaluator(DatasetEvaluator):
                 self.iou[each_region] = -1
                 self.acc[each_region] = -1
 
+        """Some utils for detectron2 table"""
         # table_hd = [item for item in self.hd.items()]
         # table_ahd = [item for item in self.ahd.items()]
         # table_hd95 = [item for item in self.hd95.items()]
@@ -459,9 +409,8 @@ class HDEvaluator(DatasetEvaluator):
         # make_table(table_hd95)
         # make_table(table_iou)
 
-        # print("dv")
         results = {
-            'count': {'total': self.count},
+            "count": {"total": self.count},
             "HD": self.hd,
             "Avg HD": self.ahd,
             "HD95": self.hd95,

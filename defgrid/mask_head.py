@@ -40,24 +40,6 @@ class DefGridHead(nn.Module):
 
         self.matrix = MatrixUtils(1, self.grid_size, self.grid_type, self.device)
 
-        # base_point = self.matrix.init_point
-        # base_normalized_point_adjacent = self.matrix.init_normalized_point_adjacent
-        # base_point_mask = self.matrix.init_point_mask
-        # base_triangle2point = self.matrix.init_triangle2point
-        # base_area_mask = self.matrix.init_area_mask
-        # base_triangle_mask = self.matrix.init_triangle_mask
-
-        # self.input_dict = {}
-        # self.input_dict['base_point'] = base_point.expand(n_batch, -1, -1)
-        # self.input_dict['base_normalized_point_adjacent'] = base_normalized_point_adjacent.expand(
-        #     n_batch, -1, -1
-        # )
-        # self.input_dict['base_point_mask'] = base_point_mask.expand(n_batch, -1, -1)
-        # self.input_dict['base_triangle2point'] = base_triangle2point.expand(n_batch, -1, -1)
-        # self.input_dict['base_area_mask'] = base_area_mask.expand(n_batch, -1)
-        # self.input_dict['base_triangle_mask'] = base_triangle_mask.expand(n_batch, -1)
-        # self.input_dict['grid_size'] = np.max(self.grid_size)
-
         self.model = DeformableGrid(cfg, self.device)
 
         self.to_three_channel = ConvTranspose2d(
@@ -110,17 +92,6 @@ class DefGridHead(nn.Module):
         output['pred_points']
         gcn_pred_points = output['gcn_pred_points']
 
-        # if self.training:
-        # deform_loss = (
-        #     variance * self.w_variance
-        #     + area_variance * self.w_area
-        #     + laplacian_loss * self.w_laplacian
-        #     + reconstruct_loss * self.w_reconstruct_loss
-        # )
-        # total_loss = deform_loss
-        # total_loss = total_loss.mean()
-
-        # return {'loss_mask': total_loss}
         mask_features = gcn_pred_points.reshape(
             -1, self.out_dim, self.grid_size[0], self.grid_size[1]
         )

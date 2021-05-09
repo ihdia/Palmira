@@ -1,22 +1,7 @@
-#!/usr/bin/env python
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 """
-Detection Training Script.
-
-This scripts reads a given config file and runs the training or evaluation.
-It is an entry point that is made to train standard models in detectron2.
-
-In order to let one script support training of many models,
-this script contains logic that are specific to these built-in models and therefore
-may not be suitable for your own project.
-For example, your research project perhaps only needs a single "evaluator".
-
-Therefore, we recommend you to use detectron2 as an library and take
-this file as an example of how to use the library.
-You may want to write your own script with your datasets and other customizations.
-
+The main training script
+To turn off defgrid mask, comment out the corresponding line @def setup(args)
 """
-
 import logging
 import os
 from collections import OrderedDict
@@ -25,18 +10,16 @@ import detectron2.utils.comm as comm
 import torch
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
-from detectron2.data import DatasetMapper
 from detectron2.data import MetadataCatalog
-from detectron2.data import build_detection_test_loader
 from detectron2.engine import DefaultTrainer
 from detectron2.engine import default_argument_parser
 from detectron2.engine import default_setup
 from detectron2.engine import hooks
 from detectron2.engine import launch
-from detectron2.evaluation import CityscapesInstanceEvaluator
-from detectron2.evaluation import CityscapesSemSegEvaluator
 from detectron2.evaluation import COCOEvaluator
 from detectron2.evaluation import COCOPanopticEvaluator
+from detectron2.evaluation import CityscapesInstanceEvaluator
+from detectron2.evaluation import CityscapesSemSegEvaluator
 from detectron2.evaluation import DatasetEvaluators
 from detectron2.evaluation import LVISEvaluator
 from detectron2.evaluation import PascalVOCDetectionEvaluator
@@ -46,8 +29,9 @@ from detectron2.modeling import GeneralizedRCNNWithTTA
 
 from defgrid.config import add_defgrid_maskhead_config
 # from hd.evaluator_perregion import HDEvaluator
-# from hd.evaluator import HDEvaluator
+from hd.evaluator import HDEvaluator
 from indiscapes_dataset import register_dataset
+
 # from validation_hooks import EvalHook
 
 register_dataset(combined_train_val=True)
@@ -91,17 +75,17 @@ class Trainer(DefaultTrainer):
             )
         if evaluator_type in ['coco', 'coco_panoptic_seg', 'indiscapes']:
             evaluator_list.append(COCOEvaluator(dataset_name, cfg, True, output_folder))
-            # evaluator_list.append(HDEvaluator(dataset_name))
+            evaluator_list.append(HDEvaluator(dataset_name))
         if evaluator_type == 'coco_panoptic_seg':
             evaluator_list.append(COCOPanopticEvaluator(dataset_name, output_folder))
         if evaluator_type == 'cityscapes_instance':
             assert (
-                torch.cuda.device_count() >= comm.get_rank()
+                    torch.cuda.device_count() >= comm.get_rank()
             ), 'CityscapesEvaluator currently do not work with multiple machines.'
             return CityscapesInstanceEvaluator(dataset_name)
         if evaluator_type == 'cityscapes_sem_seg':
             assert (
-                torch.cuda.device_count() >= comm.get_rank()
+                    torch.cuda.device_count() >= comm.get_rank()
             ), 'CityscapesEvaluator currently do not work with multiple machines.'
             return CityscapesSemSegEvaluator(dataset_name)
         elif evaluator_type == 'pascal_voc':
@@ -135,19 +119,20 @@ class Trainer(DefaultTrainer):
         res = OrderedDict({k + '_TTA': v for k, v in res.items()})
         return res
 
-    def build_hooks(self):
-        hooks = super().build_hooks()
-        # hooks.insert(
-        #     -1,
-        #     EvalHook(
-        #         self.cfg.TEST.EVAL_PERIOD,
-        #         self.model,
-        #         build_detection_test_loader(
-        #             self.cfg, self.cfg.DATASETS.TEST[0], DatasetMapper(self.cfg, True)
-        #         ),
-        #     ),
-        # )
-        return hooks
+    """Evaluation loss hook"""
+    # def build_hooks(self):
+    #     hooks = super().build_hooks()
+    #     hooks.insert(
+    #         -1,
+    #         EvalHook(
+    #             self.cfg.TEST.EVAL_PERIOD,
+    #             self.model,
+    #             build_detection_test_loader(
+    #                 self.cfg, self.cfg.DATASETS.TEST[0], DatasetMapper(self.cfg, True)
+    #             ),
+    #         ),
+    #     )
+    #     return hooks
 
 
 def setup(args):
@@ -155,6 +140,7 @@ def setup(args):
     Create configs and perform basic setups.
     """
     cfg = get_cfg()
+    # To turn off defgrid, comment the line underneath
     add_defgrid_maskhead_config(cfg)
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)

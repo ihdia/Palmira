@@ -1,3 +1,8 @@
+"""
+Evaluation hook for calculation of validation losses (don't use unless required,
+as it runs slow)
+Adds a hook (something to do) to the evaluator of Detectron2
+"""
 import datetime
 import logging
 import time

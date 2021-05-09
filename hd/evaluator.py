@@ -1,22 +1,20 @@
-from statistics import mean
+"""
+Overall HD
+This is the original evaluator
+"""
 import collections
 
 import cv2
-# import logging
 import numpy as np
 from detectron2.data import DatasetCatalog
 from detectron2.evaluation import DatasetEvaluator
-from scipy.interpolate import splprep, splev
-from shapely.geometry import MultiPolygon
-from shapely.geometry import Polygon
-from shapely.ops import cascaded_union
-# from detectron2.utils.logger import create_small_table
-from hd.losses import averaged_hausdorff_distance
-from indiscapes_dataset import categories_list
-# import itertools
-# from tabulate import tabulate
+
 from medpy.metric import hd, hd95, assd
-                    
+from scipy.interpolate import splprep, splev
+
+from indiscapes_dataset import categories_list
+
+
 def _proc_annotations(annotations):
     dic = {}
     for file in annotations.copy():
@@ -136,62 +134,6 @@ class HDEvaluator(DatasetEvaluator):
 
                 # Both have points
                 if len(gt) and len(pred):
-                    # gt_cat = np.concatenate(gt)
-                    # pred_cat = np.concatenate(pred)
-                    # res_ahd, res_hd, res_hd95 = averaged_hausdorff_distance(gt_cat, pred_cat)
-                    # self.ahd[categories_list[reg_type]].append(res_ahd)
-                    # self.hd[categories_list[reg_type]].append(res_hd)
-                    # self.hd95[categories_list[reg_type]].append(res_hd95)
-
-                    # # try:
-                    # gt_poly = []
-                    # for each in gt:
-                    #     poly = Polygon(each)
-                    #     if isinstance(poly, Polygon):
-                    #         gt_poly.append(poly)
-                    #     else:
-                    #         print("Its polygon(arr) isnt a polygon")
-                    # gt_poly = MultiPolygon(gt_poly)
-                    #     # gt_poly = MultiPolygon([Polygon(each).buffer(0) for each in gt])
-                        
-                    # pred_poly = []
-                    # for each in pred:
-                    #     poly = Polygon(each)
-                    #     if isinstance(poly, Polygon):
-                    #         pred_poly.append(poly)
-                    #     else:
-                    #         print("Its polygon(arr) isnt a polygon")
-                    # pred_poly = MultiPolygon(pred_poly)
-                        
-                    #     # pred_poly = MultiPolygon([Polygon(each).buffer(0) for each in pred])
-                    # # except:
-                    # #     print("Somethings up!")
-                    
-                    # # intersection = []
-                    # # for a in gt_poly:
-                    # #     for b in pred_poly:
-                    # #         try:
-                    # #             intersection.append(a.intersection(b))
-                    # intersection = []
-                    # for a in gt_poly:
-                    #     for b in pred_poly:
-                    #         # try:
-                    #         #     intersection.append(a.intersection(b))
-                    #         # except:
-                    #         #     intersection.append(a.buffer(0.01).intersection(b.buffer(0.01)))
-                    #         intersection.append(a.buffer(0.01).intersection(b.buffer(0.01)))
-                    # intersection = cascaded_union(intersection)
-                    # # intersection = cascaded_union(
-                    # #     [a.intersection(b) for a in gt_poly for b in pred_poly]
-                    # # )
-
-                    # gt_poly = MultiPolygon([Polygon(each) for each in gt])
-                    # pred_poly = MultiPolygon([Polygon(each) for each in pred])
-                    # intersection = cascaded_union(
-                    #     [a.buffer(0.01).intersection(b.buffer(0.01)) for a in gt_poly for b in pred_poly]
-                    # )
-                    # union = cascaded_union([gt_poly, pred_poly])
-                    # iou = intersection.area / union.area
                     gt_mask = np.zeros((input['height'], input['width']), dtype=np.int8)
                     for i in gt:
                         cv2.fillPoly(gt_mask, np.array([i]).astype(np.int32), 1)
@@ -216,7 +158,8 @@ class HDEvaluator(DatasetEvaluator):
                         return iou, accuracy
 
                     res_iou, res_accuracy = compute_iou_and_accuracy(pred_mask, gt_mask)
-                    res_ahd, res_hd, res_hd95 = assd(pred_mask, gt_mask), hd(pred_mask, gt_mask), hd95(pred_mask, gt_mask)
+                    res_ahd, res_hd, res_hd95 = assd(pred_mask, gt_mask), hd(pred_mask, gt_mask), hd95(pred_mask,
+                                                                                                       gt_mask)
                     self.ahd[categories_list[reg_type]].append(res_ahd)
                     self.hd[categories_list[reg_type]].append(res_hd)
                     self.hd95[categories_list[reg_type]].append(res_hd95)
@@ -239,8 +182,8 @@ class HDEvaluator(DatasetEvaluator):
                 #     self.ahd[categories_list[reg_type]].append(hd)
                 #     self.hd[categories_list[reg_type]].append(hd)
                 #     self.hd95[categories_list[reg_type]].append(hd)
-                    # self.iou[categories_list[reg_type]].append(0)
-                    # self.acc[categories_list[reg_type]].append(0)
+                # self.iou[categories_list[reg_type]].append(0)
+                # self.acc[categories_list[reg_type]].append(0)
                 # Both Empty
                 # elif len(gt) == 0 and len(pred) != 0:
 
@@ -313,8 +256,9 @@ class HDEvaluator(DatasetEvaluator):
             writer = csv.DictWriter(csvfile, fieldnames=["Image", "AHD", "IOU", "HD", "HD95", "ACC"])
             writer.writeheader()
             for filename, metrics in self.doc_wise.items():
-                writer.writerow({"Image":filename, **metrics})
+                writer.writerow({"Image": filename, **metrics})
 
+        """Tabular results"""
         # table = {
         #     "HD": self.hd["Overall"],
         #     "Avg HD": self.ahd["Overall"],
@@ -339,6 +283,7 @@ class HDEvaluator(DatasetEvaluator):
                 self.iou[each_region] = -1
                 self.acc[each_region] = -1
 
+        """Utils for tabular results"""
         # table_hd = [item for item in self.hd.items()]
         # table_ahd = [item for item in self.ahd.items()]
         # table_hd95 = [item for item in self.hd95.items()]

@@ -1,6 +1,6 @@
-#!/usr/bin/env python
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
+"""
+Used for getting overlayed masks from different models for comparison
+"""
 import argparse
 import json
 import os
@@ -9,20 +9,29 @@ from collections import defaultdict
 
 import cv2
 import numpy as np
+import torch
 import tqdm
 from detectron2.data import DatasetCatalog
 from detectron2.data import MetadataCatalog
-from detectron2.structures import Boxes
 from detectron2.structures import BoxMode
+from detectron2.structures import Boxes
 from detectron2.structures import Instances
 from detectron2.utils.logger import setup_logger
-from detectron2.utils.visualizer import Visualizer, _create_text_labels, GenericMask, ColorMode, VisImage, random_color, _SMALL_OBJECT_AREA_THRESH, mplc
+from detectron2.utils.visualizer import (
+    Visualizer,
+    _create_text_labels,
+    GenericMask,
+    ColorMode,
+    VisImage,
+    random_color,
+    _SMALL_OBJECT_AREA_THRESH,
+)
 from fvcore.common.file_io import PathManager
-import torch
 
 from indiscapes_dataset import register_dataset
 
 register_dataset(combined_train_val=False)
+
 
 class CustomVisualizer(Visualizer):
     def __init__(self, img_rgb, metadata=None, scale=1.0, instance_mode=ColorMode.IMAGE):
@@ -45,10 +54,9 @@ class CustomVisualizer(Visualizer):
         self.cpu_device = torch.device("cpu")
 
         # too small texts are useless, therefore clamp to 9
-        self._default_font_size = max(
-            np.sqrt(self.output.height * self.output.width) // 50, 10 // scale
-        )
+        self._default_font_size = max(np.sqrt(self.output.height * self.output.width) // 50, 10 // scale)
         self._instance_mode = instance_mode
+
     def draw_instance_predictions(self, predictions, given_colour=None):
         """
         Draw instance-level prediction results on an image.
@@ -61,7 +69,7 @@ class CustomVisualizer(Visualizer):
         Returns:
             output (VisImage): image object with visualizations.
         """
-        boxes =  None
+        boxes = None
         scores = None
         classes = predictions.pred_classes if predictions.has("pred_classes") else None
         labels = None
@@ -74,9 +82,7 @@ class CustomVisualizer(Visualizer):
             masks = None
 
         if self._instance_mode == ColorMode.SEGMENTATION and self.metadata.get("thing_colors"):
-            colors = [
-                self._jitter([x / 255 for x in self.metadata.thing_colors[c]]) for c in classes
-            ]
+            colors = [self._jitter([x / 255 for x in self.metadata.thing_colors[c]]) for c in classes]
             alpha = 0.8
         else:
             colors = None
@@ -84,9 +90,7 @@ class CustomVisualizer(Visualizer):
 
         if self._instance_mode == ColorMode.IMAGE_BW:
             self.output.img = self._create_grayscale_image(
-                (predictions.pred_masks.any(dim=0) > 0).numpy()
-                if predictions.has("pred_masks")
-                else None
+                (predictions.pred_masks.any(dim=0) > 0).numpy() if predictions.has("pred_masks") else None
             )
             alpha = 0.3
 
@@ -97,7 +101,7 @@ class CustomVisualizer(Visualizer):
             keypoints=keypoints,
             assigned_colors=colors,
             alpha=alpha,
-            given_colour=given_colour
+            given_colour=given_colour,
         )
         return self.output
 
@@ -124,31 +128,32 @@ class CustomVisualizer(Visualizer):
                 keypts = None
 
             boxes = [
-                BoxMode.convert(x["bbox"], x["bbox_mode"], BoxMode.XYXY_ABS)
-                if len(x["bbox"]) == 4
-                else x["bbox"]
+                BoxMode.convert(x["bbox"], x["bbox_mode"], BoxMode.XYXY_ABS) if len(x["bbox"]) == 4 else x["bbox"]
                 for x in annos
             ]
 
             colors = None
             category_ids = [x["category_id"] for x in annos]
             if self._instance_mode == ColorMode.SEGMENTATION and self.metadata.get("thing_colors"):
-                colors = [
-                    self._jitter([x / 255 for x in self.metadata.thing_colors[c]])
-                    for c in category_ids
-                ]
+                colors = [self._jitter([x / 255 for x in self.metadata.thing_colors[c]]) for c in category_ids]
             names = self.metadata.get("thing_classes", None)
             labels = _create_text_labels(
                 category_ids,
                 scores=None,
-                class_names=['Hv', 'Hp', 'CLS', 'BL', 'PD', 'PB', 'CC', 'LM', 'D/P'],
+                class_names=["Hv", "Hp", "CLS", "BL", "PD", "PB", "CC", "LM", "D/P"],
                 is_crowd=[x.get("iscrowd", 0) for x in annos],
             )
             labels = None
             boxes = None
             alpha = 0
             self.overlay_instances(
-                labels=labels, boxes=boxes, masks=masks, keypoints=keypts, assigned_colors=colors, alpha=alpha, given_colour=given_colour
+                labels=labels,
+                boxes=boxes,
+                masks=masks,
+                keypoints=keypts,
+                assigned_colors=colors,
+                alpha=alpha,
+                given_colour=given_colour,
             )
 
         sem_seg = dic.get("sem_seg", None)
@@ -174,15 +179,7 @@ class CustomVisualizer(Visualizer):
         return self.output
 
     def overlay_instances(
-        self,
-        *,
-        boxes=None,
-        labels=None,
-        masks=None,
-        keypoints=None,
-        assigned_colors=None,
-        alpha=0.5,
-        given_colour=None
+        self, *, boxes=None, labels=None, masks=None, keypoints=None, assigned_colors=None, alpha=0.5, given_colour=None
     ):
         """
         Args:
@@ -236,9 +233,7 @@ class CustomVisualizer(Visualizer):
         if num_instances == 0:
             return self.output
         if boxes is not None and boxes.shape[1] == 5:
-            return self.overlay_rotated_instances(
-                boxes=boxes, labels=labels, assigned_colors=assigned_colors
-            )
+            return self.overlay_rotated_instances(boxes=boxes, labels=labels, assigned_colors=assigned_colors)
 
         # Display in largest to smallest order to reduce occlusion.
         areas = None
@@ -287,10 +282,7 @@ class CustomVisualizer(Visualizer):
                     continue  # drawing the box confidence for keypoints isn't very useful.
                 # for small objects, draw text at the side to avoid occlusion
                 instance_area = (y1 - y0) * (x1 - x0)
-                if (
-                    instance_area < _SMALL_OBJECT_AREA_THRESH * self.output.scale
-                    or y1 - y0 < 40 * self.output.scale
-                ):
+                if instance_area < _SMALL_OBJECT_AREA_THRESH * self.output.scale or y1 - y0 < 40 * self.output.scale:
                     if y1 >= self.output.height - 5:
                         text_pos = (x1, y0)
                     else:
@@ -298,11 +290,7 @@ class CustomVisualizer(Visualizer):
 
                 height_ratio = (y1 - y0) / np.sqrt(self.output.height * self.output.width)
                 lighter_color = self._change_color_brightness(color, brightness_factor=0.7)
-                font_size = (
-                    np.clip((height_ratio - 0.02) / 0.08 + 1, 1.2, 2)
-                    * 0.5
-                    * self._default_font_size
-                )
+                font_size = np.clip((height_ratio - 0.02) / 0.08 + 1, 1.2, 2) * 0.5 * self._default_font_size
                 text_pos = (x0, (y0 + y1) / 2)
                 # lighter_color = (1.0, 1.0, 1.0)
                 self.draw_text(
@@ -367,105 +355,98 @@ class CustomVisualizer(Visualizer):
     #     )
     #     return self.output
 
+
 def create_instances(predictions, image_size):
     ret = Instances(image_size)
 
-    score = np.asarray([x['score'] for x in predictions])
+    score = np.asarray([x["score"] for x in predictions])
     chosen = (score > args.conf_threshold).nonzero()[0]
     score = score[chosen]
-    bbox = np.asarray([predictions[i]['bbox'] for i in chosen]).reshape(-1, 4)
+    bbox = np.asarray([predictions[i]["bbox"] for i in chosen]).reshape(-1, 4)
     bbox = BoxMode.convert(bbox, BoxMode.XYWH_ABS, BoxMode.XYXY_ABS)
 
-    labels = np.asarray([dataset_id_map(predictions[i]['category_id']) for i in chosen])
+    labels = np.asarray([dataset_id_map(predictions[i]["category_id"]) for i in chosen])
 
     ret.scores = score
     ret.pred_boxes = Boxes(bbox)
     ret.pred_classes = labels
 
     try:
-        ret.pred_masks = [predictions[i]['segmentation'] for i in chosen]
+        ret.pred_masks = [predictions[i]["segmentation"] for i in chosen]
     except KeyError:
         pass
     return ret
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='A script that visualizes the json predictions from COCO or LVIS dataset.'
+        description="A script that visualizes the json predictions from COCO or LVIS dataset."
     )
-    parser.add_argument(
-        '--inputs', required=True, nargs='+', help='JSON file produced by the model'
-    )
-    parser.add_argument('--output', required=True, help='output directory')
-    parser.add_argument('--dataset', help='name of the dataset', default='indiscapes_val')
-    parser.add_argument('--conf-threshold', default=0.5, type=float, help='confidence threshold')
+    parser.add_argument("--inputs", required=True, nargs="+", help="JSON file produced by the model")
+    parser.add_argument("--output", required=True, help="output directory")
+    parser.add_argument("--dataset", help="name of the dataset", default="indiscapes_val")
+    parser.add_argument("--conf-threshold", default=0.5, type=float, help="confidence threshold")
     args = parser.parse_args()
 
     logger = setup_logger()
 
     predictions = list()
     for input in args.inputs:
-        with PathManager.open(input, 'r') as f:
+        with PathManager.open(input, "r") as f:
             predictions.append(json.load(f))
 
     pred_by_input = list(defaultdict(list))
     for prediction in predictions:
         pred_by_image = defaultdict(list)
         for p in prediction:
-            pred_by_image[p['image_id']].append(p)
+            pred_by_image[p["image_id"]].append(p)
         pred_by_input.append(pred_by_image)
 
     dicts = list(DatasetCatalog.get(args.dataset))
     metadata = MetadataCatalog.get(args.dataset)
 
-    if hasattr(metadata, 'thing_dataset_id_to_contiguous_id'):
+    if hasattr(metadata, "thing_dataset_id_to_contiguous_id"):
 
         def dataset_id_map(ds_id):
             return metadata.thing_dataset_id_to_contiguous_id[ds_id]
 
-    elif 'lvis' in args.dataset:
+    elif "lvis" in args.dataset:
         # LVIS results are in the same format as COCO results, but have a different
         # mapping from dataset category id to contiguous category id in [0, #categories - 1]
         def dataset_id_map(ds_id):
             return ds_id - 1
 
-    elif 'indiscapes' in args.dataset:
+    elif "indiscapes" in args.dataset:
 
         def dataset_id_map(ds_id):
             return ds_id
 
     else:
-        raise ValueError(f'Unsupported dataset: {args.dataset}')
+        raise ValueError(f"Unsupported dataset: {args.dataset}")
 
     os.makedirs(args.output, exist_ok=True)
 
     for dic in tqdm.tqdm(dicts):
-        img = cv2.imread(dic['file_name'], cv2.IMREAD_COLOR)[:, :, ::-1]
-        basename = os.path.basename(dic['file_name'])
+        img = cv2.imread(dic["file_name"], cv2.IMREAD_COLOR)[:, :, ::-1]
+        basename = os.path.basename(dic["file_name"])
 
         # vis_preds = list()
         img_canvas = img.copy()
-        colours = [
-            (0, 1, 0),  # Baseline (green)
-            (1, 0, 0),  # Ours (red)
-            (1, 1, 1)   # GT (white)
-        ]
-        
+        colours = [(0, 1, 0), (1, 0, 0), (1, 1, 1)]  # Baseline (green)  # Ours (red)  # GT (white)
+
         vis = CustomVisualizer(img_canvas, metadata)
         img_canvas = vis.draw_dataset_dict(dic, colours[-1]).get_image()
 
         for i, pred_by_image in enumerate(pred_by_input):
-            predictions = create_instances(pred_by_image[dic['image_id']], img.shape[:2])
+            predictions = create_instances(pred_by_image[dic["image_id"]], img.shape[:2])
             vis = CustomVisualizer(img_canvas, metadata)
             img_canvas = vis.draw_instance_predictions(predictions, given_colour=colours[i]).get_image()
             # vis_preds.append(vis_pred)
 
-
-
         # stitched_image = np.vstack((vis_gt, np.vstack(vis_preds)))
         # if os.path.exists(os.path.join(args.output, basename)):
-            # When there is already a file with that name
-            # basename = "_".join(dic['file_name'].split('/')[-3:])
+        # When there is already a file with that name
+        # basename = "_".join(dic['file_name'].split('/')[-3:])
         filename = f"{osp.splitext('_'.join(dic['file_name'].split('/')[-3:]))[0]}.jpg"
         cv2.imwrite(os.path.join(args.output, filename), cv2.cvtColor(img_canvas, cv2.COLOR_RGB2BGR))
         # cv2.imshow("img", stitched_image)
