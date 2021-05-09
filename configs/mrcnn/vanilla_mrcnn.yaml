@@ -1,0 +1,12 @@
+_BASE_: "../Base-RCNN-FPN.yaml"
+MODEL:
+  WEIGHTS: output/mrcnn_r50_1x.pkl
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs_v1/vanilla_mrcnn"

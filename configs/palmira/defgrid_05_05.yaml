@@ -1,0 +1,15 @@
+_BASE_: "Base-DefGird-MRCNN-FPN.yaml"
+MODEL:
+  WEIGHTS: output/mrcnn_r50_1x.pkl
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+  DEFGRID_MASK_HEAD:
+    W_AREA: 0.05
+    W_LAPLACIAN: 0.05
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs/defgrid_05_05"

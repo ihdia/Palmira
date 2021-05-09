@@ -1,0 +1,21 @@
+_BASE_: "../Base-RCNN-FPN.yaml"
+MODEL:
+  ROI_MASK_HEAD:
+    NAME: "DefGridHead"
+    NUM_CONV: 4
+    POOLER_RESOLUTION: 14
+  DEFGRID_MASK_HEAD:
+    GRID_NUM: 1024
+    STATE_DIM: 128
+    GRID_SIZE: [14, 14]
+    FEATURE_CHANNEL_NUM: 128
+    OUT_DIM: 256
+    DEFORM_LAYER_NUM: 8
+    GRID_TYPE: 'dense_quad'  # choices=['lattice', 'quad', 'dense_quad', 'quad_angle']
+    MASK_COEF: 0.3
+    W_VARIANCE: 1.0
+    W_AREA: 0.01
+    W_LAPLACIAN: 0.01
+    W_RECONSTRUCT_LOSS: 0.5
+    GAMMA: 0.1
+    SIGMA: 0.001
