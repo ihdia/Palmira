@@ -32,8 +32,8 @@ For setup of detectron2, please follow the [official documentation](https://dete
 
 # Usage
 ## Initial Setup:
-- Download the Indiscapes-v2 from this [link]() and model weights from this [link]().
-- Place Indiscapes2 in images directory and model weights in the init_weights directory
+- Download the Indiscapes-v2 from this [link](),model weights from this [link]() and Ground truth annotations(jsons) from here[link]().
+- Place Indiscapes2 in images directory,model weights in the init_weights directory and jsons in doc_v2 directory.
 - Setup the Virtual Environment with requirement.txt file
 ```
 python3 -m pip install -r requirements.txt

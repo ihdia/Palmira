@@ -1,0 +1,1 @@
+Place the downloaded Palmira dataset in this Directory
