@@ -31,18 +31,55 @@ The PALMIRA code is tested with
 For setup of detectron2, please follow the [official documentation](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
 
 # Usage
+## Initial Setup:
+- Download the Indiscapes-v2 from this [link]() and model weights from this [link]().
+- Place Indiscapes2 in images directory and model weights in the init_weights directory
+- Setup the Virtual Environment with requirement.txt file
+```
+python3 -m pip install -r requirements.txt
+```
+- Load the required cuda modules for either Training or inference.
+```
+   module add cuda/10.0;
+   module add cudnn/7.3-cuda-10.0;
+```
 ## Training
+### Train Palmira:
+```
+Python train_palmira.py --config-file  configs/palmira/Palmira.yaml num-gpus 4 --resume
+```
+### Train Deconv:
+Remove defgrid mask head by commenting out the `add_defgrid_maskhead_config(cfg)` from the basic setup in `train_net_palmira.py`
 
-## Evaluation (w GT)
-### Quantitative
-### Qualitative - Parsing .json and overlays images
+```
+Python train_palmira.py --config-file  configs/dconv/dconv_c3-c5.yaml num-gpus 4 --resume
+```
 
-## Inference (wo GT)
-### Qualitative
+### Train MaskRCNN:
+Defgrid mask needs to be removed here as well.
+```
+Python train_palmira.py --config-file  configs/mrcnn/vanilla_mrcnn.yaml num-gpus 4 --resume
+```
 
-# Visual Results
-![visual results](assets/Qualitative.png)
+Logs and other output files can be checked in the outputs directory once the training starts.
+## Inference
+## Quantitative
+To start Inference and get Quantitative results on the test set:
+```
+Python train_palmira.py --config-file  configs/palmira/Palmira.yaml --eval-only --MODEL.WEIGHTS init_weights/defgrid_dconv/defgrid_dconv.pth 
+```
+## Qualitative - Parsing .json and overlays images
+To get Qualititative results of the test dataset ( Images overlaid with output instances )
+```
+python visualise_json_results.py --inputs
+ path/to/output_file1.json path/to/output_file2.json --output outputs/qualitative/ --dataset indiscapes_test --conf-threshold 0.5
+```
+If Mulitple models need to be compared Qualitatively then multiple json files need to be given as input.
 
+## To try it on ur own images:
+```
+python demo.py --input path/to/image_directory/*.jpg --output path/to/output_directory --config configs/palmira/Palmira.yaml  --opts MODEL.WEIGHTS init_weights/defgrid_dconv/defgrid_dconv.pth
+```
 # Citation
 ```bibtex
 @inproceedings{sharan2021palmira,
@@ -54,7 +91,7 @@ For setup of detectron2, please follow the [official documentation](https://dete
 ```
 
 # Contact
-If you have any question, please contact [Dr. Ravi Kiran Sarvadevabhatla](mailto:ravi.kiran@iiit.ac.in.)
+For any queries, please contact [Dr. Ravi Kiran Sarvadevabhatla](mailto:ravi.kiran@iiit.ac.in.)
 
 # License
 This project is open sourced under MIT license.

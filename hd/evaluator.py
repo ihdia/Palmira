@@ -55,7 +55,7 @@ def downsample_points(output):
     segm_per_region = {i: [] for i in range(len(categories_list))}
 
     for i in range(len(output['instances'])):
-        contours, hierarchy = cv2.findContours(
+        _,contours, hierarchy= cv2.findContours(
             predmasks[i], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
         )
         if len(contours) == 0:
