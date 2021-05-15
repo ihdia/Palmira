@@ -1,1 +1,11 @@
-Place the downloaded Annotations(json files) in this Directory
+# JSON Files Directory Structure
+
+Verify that the dataset downloaded matches this directory structure
+
+```
+└── doc
+    ├── test
+    ├── train
+    ├── train_val_combined
+    └── val
+```

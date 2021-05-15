@@ -63,7 +63,10 @@ pip install -r requirements.txt
           used: [[`Mask RCNN R50-FPN-1x Link`](https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x/137260431/model_final_a54504.pkl)]
     - JSON in `doc_v2` directory
       
-More information can be found in folder specific READMEs.
+More information can be found in folder-specific READMEs.
+- [images/README.md](images/README.md)
+- [doc_v2/README.md](doc_v2/README.md)
+- [init_weights/README.md](init_weights/README.md)
 
 ### SLURM Workloads
 
