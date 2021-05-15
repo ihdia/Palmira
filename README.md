@@ -61,10 +61,9 @@ pip install -r requirements.txt
     - COCO-Pretrained Model weights in the `init_weights` directory
         - Weights
           used: [[`Mask RCNN R50-FPN-1x Link`](https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x/137260431/model_final_a54504.pkl)]
-        - Feel free to use other weights from
-          Detectron2 [[`Model Zoo`](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md#coco-instance-segmentation-baselines-with-mask-r-cnn)]
-        - _NOTE: Pre-trained weights can be turned off in the configs_
-    - JSON in `doc_v2` directory More information can be found in folder specific READMEs.
+    - JSON in `doc_v2` directory
+      
+More information can be found in folder specific READMEs.
 
 ### SLURM Workloads
 
@@ -112,7 +111,7 @@ python train_palmira.py \
 
 Can be executed only after quantitative inference (or) on validation outputs at the end of each training epoch.
 
-This parses the output JSON and overlays predictions on the images. 
+This parses the output JSON and overlays predictions on the images.
 
 ```bash
 python visualise_json_results.py \
@@ -121,12 +120,13 @@ python visualise_json_results.py \
     --dataset indiscapes_test
 ```
 
-> NOTE: To compare multiple models, multiple input JSON files can be passed. This produces a single 
+> NOTE: To compare multiple models, multiple input JSON files can be passed. This produces a single
 > vertically stitched image combining the predictions of each JSON passed.
 
 ### Custom Images
 
 To run the model on your own images without training, please download the provided weights.
+
 ```bash
 python demo.py \
     --input <path-to-image-directory-*.jpg> \
