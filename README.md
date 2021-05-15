@@ -139,6 +139,10 @@ python demo.py \
     --opts MODEL.WEIGHTS <init-weights.pth>
 ```
 
+# Visual Results
+
+![visual results](assets/Qualitative.png)
+
 # Citation
 
 If you use PALMIRA/Indiscapes-v2, please use the following BibTeX entry.
