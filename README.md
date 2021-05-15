@@ -21,66 +21,122 @@
 > Will be released soon! -->
 
 # Dependencies and Installation
-The PALMIRA code is tested with 
-- Python 3.7
-- PyTorch 1.7.1
-- Detectron2
-- CUDA 10.0
-- CudNN/7.3-CUDA-10.0
 
-For setup of detectron2, please follow the [official documentation](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
+## Manual Setup
+
+The PALMIRA code is tested with
+
+- Python (`3.7.x`)
+- PyTorch (`1.7.1`)
+- Detectron2 (`0.4`)
+- CUDA (`10.0`)
+- CudNN (`7.3-CUDA-10.0`)
+
+For setup of Detectron2, please follow
+the [official documentation](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
+
+## Automatic Setup (From an Env File)
+
+We have provided environment files for both Conda and Pip methods. Please use any one of the following.
+
+### Using Conda
+
+```bash
+conda env create -f environment.yml
+```
+
+### Using Pip
+
+```bash
+pip install -r requirements.txt
+```
 
 # Usage
+
 ## Initial Setup:
-- Download the Indiscapes-v2 from this [link](),model weights from this [link]() and Ground truth annotations(jsons) from here[link]().
-- Place Indiscapes2 in images directory,model weights in the init_weights directory and jsons in doc_v2 directory.
-- Setup the Virtual Environment with requirement.txt file
+
+- Download the Indiscapes-v2 **[[`Dataset Link`](https://github.com/ihdia/indiscapes)]**
+- Place the
+    - Dataset under `images` directory
+    - COCO-Pretrained Model weights in the `init_weights` directory
+        - Weights
+          used: [[`Mask RCNN R50-FPN-1x Link`](https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x/137260431/model_final_a54504.pkl)]
+        - Feel free to use other weights from
+          Detectron2 [[`Model Zoo`](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md#coco-instance-segmentation-baselines-with-mask-r-cnn)]
+        - _NOTE: Pre-trained weights can be turned off in the configs_
+    - JSON in `doc_v2` directory More information can be found in folder specific READMEs.
+
+### SLURM Workloads
+
+If your compute uses SLURM workloads, please load these (or equivalent) modules at the start of your experiments. Ensure
+that all other modules are unloaded.
+
 ```bash
-python -m pip install -r requirements.txt
+module add cuda/10.0
+module add cudnn/7.3-cuda-10.0
 ```
-- Load the required cuda modules for either Training or inference.
-```bash
-   module add cuda/10.0;
-   module add cudnn/7.3-cuda-10.0;
-```
+
 ## Training
-### Train Palmira:
-```bash
-Python train_palmira.py --config-file  configs/palmira/Palmira.yaml num-gpus 4 --resume
-```
-### Train Deconv:
-Remove defgrid mask head by commenting out the `add_defgrid_maskhead_config(cfg)` from the basic setup in `train_net_palmira.py`
+
+### Palmira
+
+Train the presented network
 
 ```bash
-Python train_palmira.py --config-file  configs/dconv/dconv_c3-c5.yaml num-gpus 4 --resume
+python train_palmira.py \
+    --config-file configs/palmira/Palmira.yaml \
+    --num-gpus 4
 ```
 
-### Train MaskRCNN:
-Defgrid mask needs to be removed here as well.
-```bash
-Python train_palmira.py --config-file  configs/mrcnn/vanilla_mrcnn.yaml num-gpus 4 --resume
-```
+- Any required hyper-parameter changes can be performed in the `Palmira.yaml` file.
+- Resuming from checkpoints can be done by adding `--resume` to the above command.
 
-Logs and other output files can be checked in the outputs directory once the training starts.
+### Ablative Variants and Baselines
+
+Please refer to the [README.md](configs/README.md) under the `configs` directory for ablative variants and baselines.
+
 ## Inference
-## Quantitative
-To start Inference and get Quantitative results on the test set:
-```bash
-Python train_palmira.py --config-file  configs/palmira/Palmira.yaml --eval-only --MODEL.WEIGHTS init_weights/defgrid_dconv/defgrid_dconv.pth 
-```
-## Qualitative - Parsing .json and overlays images
-To get Qualititative results of the test dataset ( Images overlaid with output instances )
-```bash
-python visualise_json_results.py --inputs
- path/to/output_file1.json path/to/output_file2.json --output outputs/qualitative/ --dataset indiscapes_test --conf-threshold 0.5
-```
-If Mulitple models need to be compared Qualitatively then multiple json files need to be given as input.
 
-## To try it on ur own images:
+### Quantitative
+
+To perform inference and get quantitative results on the test set.
+
 ```bash
-python demo.py --input path/to/image_directory/*.jpg --output path/to/output_directory --config configs/palmira/Palmira.yaml  --opts MODEL.WEIGHTS init_weights/defgrid_dconv/defgrid_dconv.pth
+python train_palmira.py \
+    --config-file configs/palmira/Palmira.yaml \
+    --eval-only \
+    MODEL.WEIGHTS <path-to-model-file> 
 ```
+
+### Qualitative
+
+Can be executed only after quantitative inference (or) on validation outputs at the end of each training epoch.
+
+This parses the output JSON and overlays predictions on the images. 
+
+```bash
+python visualise_json_results.py \
+    --inputs <path-to-output-file-1.json> [... <path-to-output-file-2.json>] \
+    --output outputs/qualitative/ \
+    --dataset indiscapes_test
+```
+
+> NOTE: To compare multiple models, multiple input JSON files can be passed. This produces a single 
+> vertically stitched image combining the predictions of each JSON passed.
+
+### Custom Images
+
+To run the model on your own images without training, please download the provided weights.
+```bash
+python demo.py \
+    --input <path-to-image-directory-*.jpg> \
+    --output <path-to-output-directory> \
+    --config configs/palmira/Palmira.yaml \
+    --opts MODEL.WEIGHTS <init-weights.pth>
+```
+
 # Citation
+
 ```bibtex
 @inproceedings{sharan2021palmira,
     title = {PALMIRA: A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts},
@@ -91,7 +147,9 @@ python demo.py --input path/to/image_directory/*.jpg --output path/to/output_dir
 ```
 
 # Contact
+
 For any queries, please contact [Dr. Ravi Kiran Sarvadevabhatla](mailto:ravi.kiran@iiit.ac.in.)
 
 # License
-This project is open sourced under MIT license.
+
+This project is open sourced under [MIT License](LICENSE).
