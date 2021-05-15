@@ -1,6 +1,6 @@
 _BASE_: "../Base-RCNN-FPN.yaml"
 MODEL:
-  WEIGHTS: output/mrcnn_r50_1x.pkl
+  WEIGHTS: init_weights/mrcnn_r50_1x.pkl
   MASK_ON: True
   RESNETS:
     DEPTH: 50
@@ -11,7 +11,7 @@ INPUT:
 DATASETS:
   TRAIN: ("indiscapes_train_val_combined",)
   TEST: ("indiscapes_test",)
-OUTPUT_DIR: "final_outputs/dconv"
+OUTPUT_DIR: "outputs/dconv"
 SOLVER:
   MAX_ITER: 20000
   CHECKPOINT_PERIOD: 600
