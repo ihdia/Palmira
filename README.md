@@ -1,8 +1,12 @@
 <div align="center">
 
-# PALMIRA
+<samp>
 
-## A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts
+<h1> PALMIRA </h1>
+
+<h2> A Deep Deformable Network for Instance Segmentation of Dense and Uneven Layouts in Handwritten Manuscripts </h2>
+
+</samp>
 
 **_To appear at [ICDAR 2021](https://icdar2021.org/)_**
 
