@@ -1,0 +1,22 @@
+_BASE_: "detr_segm_256_6_6_torchvision.yaml"
+MODEL:
+  WEIGHTS: "converted_model.pth"
+  DETR:
+    FROZEN_WEIGHTS: 'converted_model.pth'
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+  CROP:
+    ENABLED: False
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs/detr"
+SOLVER:
+  MAX_ITER: 20000
+  CHECKPOINT_PERIOD: 600
+  IMS_PER_BATCH: 4
+  BASE_LR: 0.02
+  STEPS: (8000, 12000)
+TEST:
+  EVAL_PERIOD: 600
+SEED: 1

@@ -1,0 +1,18 @@
+_BASE_: Base-PointRend.yaml
+MODEL:
+  WEIGHTS: final_outputs/point_rend_init_wts.pkl
+  RESNETS:
+    DEPTH: 50
+  POINT_HEAD:
+    NUM_CLASSES: 9
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs/pointrend"
+SOLVER:
+  MAX_ITER: 600
+  CHECKPOINT_PERIOD: 600
+TEST:
+  EVAL_PERIOD: 600

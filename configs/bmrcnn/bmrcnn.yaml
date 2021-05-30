@@ -1,0 +1,17 @@
+_BASE_: Base-BMask-R-CNN-FPN.yaml
+MODEL:
+  WEIGHTS: final_outputs/bmask_rcnn_r50_1x.pth
+  MASK_ON: true
+  RESNETS:
+    DEPTH: 50
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs/bmrcnn"
+SOLVER:
+  MAX_ITER: 20000
+  CHECKPOINT_PERIOD: 1000
+TEST:
+  EVAL_PERIOD: 1000

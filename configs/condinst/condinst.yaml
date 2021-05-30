@@ -1,0 +1,24 @@
+_BASE_: "Base-CondInst.yaml"
+MODEL:
+  WEIGHTS: "final_outputs/condinst_init_wts.pth"
+  RESNETS:
+    DEPTH: 50
+  ROI_HEADS:
+    NUM_CLASSES: 9 
+  FCOS:
+    NUM_CLASSES: 9
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+DATASETS:
+  TRAIN: ("indiscapes_train_val_combined",)
+  TEST: ("indiscapes_test",)
+OUTPUT_DIR: "final_outputs/condinst_rerun"
+SOLVER:
+  MAX_ITER: 20000
+  CHECKPOINT_PERIOD: 1500
+  IMS_PER_BATCH: 4
+  BASE_LR: 0.02
+  STEPS: (8000, 12000)
+TEST:
+  EVAL_PERIOD: 5000
+SEED: 1
