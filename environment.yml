@@ -1,0 +1,25 @@
+name: example-environment
+
+dependencies:
+  - python=3.7
+  - pip:
+    - matplotlib==3.3.2
+    - MedPy==0.4.0
+    - numpy
+    - opencv-python==4.4.0.44
+    - Pillow
+    - scikit-image==0.17.2
+    - scikit-learn==0.24.1
+    - scipy==1.5.3
+    - Shapely==1.7.1
+    - tabulate==0.8.7
+    - tensorboard==2.3.0
+    - tensorboard-plugin-wit==1.7.0
+    - tensorboardX==2.1
+    - torch==1.7.1
+    - torchvision==0.7.0
+    - tqdm==4.50.1
+
+# Please follow official detectron2, PyTorch installation
+# instructions as an environement file does not account for your
+# hardware and building a framework the recommended way
