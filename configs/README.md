@@ -34,14 +34,17 @@ python train_palmira.py \
 
 ## Other Baselines
 
-| Model Name |                                          Repo                                         |
+Please refer to respective folders for code, train scripts, configs, and the README for usage and installation instructions.
+
+# References
+
+| Model Name |                                   Official Code Repo                                  |
 |:----------:|:-------------------------------------------------------------------------------------:|
 |  CondInst  |      [Code](https://github.com/aim-uofa/AdelaiDet/tree/master/configs/CondInst)       |
 | PointRend  | [Code](https://github.com/facebookresearch/detectron2/tree/master/projects/PointRend) |
 |   BMRCNN   |       [Code](https://github.com/hustvl/BMaskR-CNN/tree/master/projects/BMaskR-CNN)    |
 |    DETR    |            [Code](https://github.com/facebookresearch/detr/tree/master/d2)            |
 
-# References
 ```bibtex
 @misc{carion2020endtoend,
       title={End-to-End Object Detection with Transformers}, 
