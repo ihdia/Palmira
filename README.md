@@ -15,7 +15,7 @@
 
 <br>
 
-<img src="assets/Palmira-Arch-Crop.jpg">
+<img src="assets/Architecture_final.jpg">
 
 ---
 
