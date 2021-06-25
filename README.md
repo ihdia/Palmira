@@ -10,7 +10,7 @@
 
 **_To appear at [ICDAR 2021](https://icdar2021.org/)_**
 
-| **[ [```Paper```](<>) ]** | **[ [```Website```](<https://ihdia.iiit.ac.in/Palmira/>) ]** |
+| **[ [```Paper```](<https://drive.google.com/file/d/163h9c30sWuxw2VxcmEwvUMnjHzJk8lNE/view?usp=sharing>) ]** | **[ [```Website```](<https://ihdia.iiit.ac.in/Palmira/>) ]** |
 |:-------------------:|:-------------------:|
 
 <br>
