@@ -133,7 +133,7 @@ python visualise_json_results.py \
 
 ### Custom Images
 
-To run the model on your own images without training, please download the provided weights.
+To run the model on your own images without training, please download the provided weights from  **[[`here`](https://zenodo.org/record/4841067#.YPWrcugzZPY)]**.
 
 ```bash
 python demo.py \
