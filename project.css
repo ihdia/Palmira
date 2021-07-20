@@ -582,3 +582,11 @@ img.hover-shadow {
   transform: scale(2);
   cursor: zoom-out
 }
+
+.vid-border{
+  position: relative;
+  /* height: 480px;
+  width: 854px; */
+  border: 5px solid black;
+  overflow: hidden;
+}
