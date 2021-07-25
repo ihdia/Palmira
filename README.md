@@ -20,14 +20,16 @@
 ---
 
 <div align="center">
-<img src="https://img.shields.io/badge/Watch on YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white"/>
+    <a href="https://youtu.be/V4XWngkrtxQ">
+        <img src="https://img.shields.io/badge/Watch on YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white"/>
+    </a>
 <br>
 <table>
     <tr>
         <td>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=V4XWngkrtxQ" target="_blank">
-    <img src="http://img.youtube.com/vi/V4XWngkrtxQ/maxresdefault.jpg" alt="Watch the video" width="640" height="360" border="5"/>
-</a>
+            <a href="https://youtu.be/V4XWngkrtxQ" target="_blank">
+                <img src="http://img.youtube.com/vi/V4XWngkrtxQ/maxresdefault.jpg" alt="Watch the video" width="640" height="360" border="5"/>
+            </a>
         </td>
     </tr>
     <tr>
