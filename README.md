@@ -17,6 +17,13 @@
 
 <img src="assets/Architecture_final.jpg">
 
+<img align="left" width="80" height="80" src="https://i.pinimg.com/originals/19/7b/36/197b365922d1ea3aa1a932ff9bbda4a6.png">
+
+<b> Teaser Video (Click on image below) </b>
+<br>
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/V4XWngkrtxQ/0.jpg)](http://www.youtube.com/watch?v=V4XWngkrtxQ "Palmira teaser video")
+    
 ---
 
 </div>
