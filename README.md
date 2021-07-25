@@ -115,6 +115,10 @@ python train_palmira.py \
     MODEL.WEIGHTS <path-to-model-file> 
 ```
 
+- This outputs 2 json files in the corresponding output directory from the config.
+    - `coco_instances_results.json` - This is an encoded format which is to be parsed to get the [qualitative results](https://github.com/ihdia/Palmira#qualitative)
+    - `indiscapes_test_coco_format.json` - This is regular coco encoded format which is human parsable
+        
 ### Qualitative
 
 Can be executed only after quantitative inference (or) on validation outputs at the end of each training epoch.
