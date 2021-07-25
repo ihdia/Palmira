@@ -65,7 +65,7 @@ pip install -r requirements.txt
     - COCO-Pretrained Model weights in the `init_weights` directory
         - Weights
           used: [[`Mask RCNN R50-FPN-1x Link`](https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x/137260431/model_final_a54504.pkl)]
-    - JSON in `doc_v2` directory
+    - JSON in `doc_v2` directory (a sample JSON has been provided [here](https://github.com/ihdia/Palmira/blob/main/doc_v2/via_region_data.json))
 
 More information can be found in folder-specific READMEs.
 
