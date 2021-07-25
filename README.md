@@ -17,12 +17,24 @@
 
 <img src="assets/Architecture_final.jpg">
 
-<img align="left" width="80" height="80" src="https://i.pinimg.com/originals/19/7b/36/197b365922d1ea3aa1a932ff9bbda4a6.png">
+---
 
-<b> Teaser Video (Click on image below) </b>
+<div align="center">
+<img src="https://img.shields.io/badge/Watch on YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white"/>
 <br>
-
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/V4XWngkrtxQ/0.jpg)](http://www.youtube.com/watch?v=V4XWngkrtxQ "Palmira teaser video")
+<table>
+    <tr>
+        <td>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=V4XWngkrtxQ" target="_blank">
+    <img src="http://img.youtube.com/vi/V4XWngkrtxQ/maxresdefault.jpg" alt="Watch the video" width="640" height="360" border="5"/>
+</a>
+        </td>
+    </tr>
+    <tr>
+        <th><samp>Teaser Video (Click on Image above)</samp></th>
+    </tr>
+</table>
+</div>
     
 ---
 
