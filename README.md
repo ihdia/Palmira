@@ -159,7 +159,7 @@ python visualise_json_results.py \
 ### Custom Images
 
 To run the model on your own images without training, please download the provided weights from  **[[`here`](https://zenodo.org/record/4841067#.YPWrcugzZPY)]**.
-
+The Google Colab Notebook to perform the same experiment can be found at this [`link`](https://colab.research.google.com/drive/1bg0fEiAkA8REt3Pb4zS9JrkNuBk_RNY8#scrollTo=fh9cfMw8vIiO).
 ```bash
 python demo.py \
     --input <path-to-image-directory-*.jpg> \
