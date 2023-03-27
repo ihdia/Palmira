@@ -11,8 +11,8 @@ from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.logger import setup_logger
 
-from defgrid.config import add_defgrid_maskhead_config
-from predictor import VisualizationDemo
+from palmira.defgrid.config import add_defgrid_maskhead_config
+from palmira.main import visualization_demo
 
 # constants
 WINDOW_NAME = "PALMIRA Detections"
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     cfg = setup_cfg(args)
 
-    demo = VisualizationDemo(cfg)
+    visualization_demo(cfg)
 
     if args.input:
         if len(args.input) == 1:

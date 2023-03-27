@@ -28,7 +28,7 @@ from detectron2.utils.visualizer import (
 )
 from fvcore.common.file_io import PathManager
 
-from indiscapes_dataset import register_dataset
+from palmira.indiscapes_dataset import register_dataset
 
 register_dataset(combined_train_val=False)
 

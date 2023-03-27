@@ -30,7 +30,7 @@ from detectron2.modeling import GeneralizedRCNNWithTTA
 from defgrid.config import add_defgrid_maskhead_config
 # from hd.evaluator_perregion import HDEvaluator
 from hd.evaluator import HDEvaluator
-from indiscapes_dataset import register_dataset
+from palmira.indiscapes_dataset import register_dataset
 
 # from validation_hooks import EvalHook
 

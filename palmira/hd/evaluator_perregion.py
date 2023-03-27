@@ -12,7 +12,7 @@ from detectron2.evaluation import DatasetEvaluator
 from medpy.metric import hd95, assd
 from scipy.interpolate import splprep, splev
 
-from indiscapes_dataset import categories_list
+from palmira.indiscapes_dataset import categories_list
 
 
 def _proc_annotations(annotations):

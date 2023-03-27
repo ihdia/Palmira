@@ -40,7 +40,7 @@ from adet.checkpoint import AdetCheckpointer
 from adet.evaluation import TextEvaluator
 from hd.config import add_hd_maskhead_config
 from hd.evaluator import HDEvaluator
-from indiscapes_dataset import register_dataset
+from palmira.indiscapes_dataset import register_dataset
 from validation_hooks import EvalHook
 
 register_dataset(combined_train_val=True)

@@ -28,7 +28,7 @@ from detectron2.evaluation import DatasetEvaluators
 
 from detectron2.solver.build import maybe_add_gradient_clipping
 from hd.evaluator import HDEvaluator
-from indiscapes_dataset import register_dataset
+from palmira.indiscapes_dataset import register_dataset
 from validation_hooks import EvalHook
 
 register_dataset(combined_train_val=True)

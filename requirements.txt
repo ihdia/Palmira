@@ -33,7 +33,7 @@ mkl-service==2.4.0
 mypy-extensions==0.4.3
 networkx==2.6.3
 ninja==1.10.2.3
-numpy==1.21.6
+numpy==1.22.3
 oauthlib==3.2.0
 omegaconf==2.2.2
 opencv-python==4.6.0.66
@@ -60,9 +60,7 @@ scikit-learn==1.0.2
 scipy==1.7.3
 Shapely==1.8.2
 SimpleITK==2.1.1.2
-
 six==1.16.0
-
 tabulate==0.8.9
 tenacity==8.2.2
 tensorboard==2.9.1
